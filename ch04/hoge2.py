@@ -1,6 +1,8 @@
 
 
 import numpy as np
+import sys, os
+sys.path.append(os.pardir)
 from dataset.mnist import load_mnist
 from two_layer_net import TwoLayerNet
 import matplotlib.pylab as plt
@@ -9,9 +11,9 @@ import matplotlib.pylab as plt
 
 train_loss_list = []
 
-iters_num = 10000
+iters_num = 10
 train_size = x_train.shape[0]
-batch_size = 100
+batch_size = 1
 learning_rate = 0.1
 
 network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
@@ -30,3 +32,7 @@ for i in range(iters_num):
     train_loss_list.append(loss)
 
 
+plt.xlabel("t")
+plt.ylabel("loss")
+plt.plot(np.arange(iters_num), train_loss_list)
+plt.show()
