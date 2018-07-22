@@ -5,17 +5,19 @@ sys.path.append(os.pardir)
 import numpy as np
 from common.gradient import numerical_gradient
 from collections import OrderedDict
+from common.functions import softmax, cross_entropy_error
 
 class ReLu:
     def __init__(self):
-        self.mask == None
+        self.mask = None
     def forward(self, x):
-        self.mask = x<=0
-        out = x.copy
+        self.mask = (x<=0)
+        # out = x.copyだとうまくいかない
+        out = x.copy()
         out[self.mask] = 0
         return out
     def backward(self, dout):
-        dx = dout.copy
+        dx = dout.copy()
         dx[self.mask] = 0
         return dx
         
@@ -94,26 +96,27 @@ class TwoLayerNet:
     def numerical_gradient(self, x, t):
         loss_w = lambda W: self.loss(x,t)
         grads = {}
-        grads{'W1'} = numerical_gradient(loss_w, self.params['W1'])
-        grads{'W2'} = numerical_gradient(loss_w, self.params['W2'])
-        grads{'b1'} = numerical_gradient(loss_w, self.params['b1'])
-        grads{'b2'} = numerical_gradient(loss_w, self.params['b2'])
+        grads['W1'] = numerical_gradient(loss_w, self.params['W1'])
+        grads['W2'] = numerical_gradient(loss_w, self.params['W2'])
+        grads['b1'] = numerical_gradient(loss_w, self.params['b1'])
+        grads['b2'] = numerical_gradient(loss_w, self.params['b2'])
         return grads
-    def gradient(self):
+    def gradient(self, x, t):
         # forward
         self.loss(x, t)
         # backward
         dout = 1
         dout = self.lastlayer.backward(dout)
-        layers = self.layers.values():
+        layers = list(self.layers.values())
+        # import pdb; pdb.set_trace()
         layers.reverse()
         for layer in layers:
             dout = layer.backward(dout)
 
         grads={}
-        grads{'W1'} = self.layers.['Affine1'].dw
-        grads{'b1'} = self.layers.['Affine1'].db
-        grads{'W2'} = self.layers.['Affine2'].dw
-        grads{'b2'} = self.layers.['Affine2'].db
+        grads['W1'] = self.layers['Affine1'].dw
+        grads['b1'] = self.layers['Affine1'].db
+        grads['W2'] = self.layers['Affine2'].dw
+        grads['b2'] = self.layers['Affine2'].db
         return grads
         
